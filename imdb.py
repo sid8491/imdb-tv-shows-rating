@@ -4,9 +4,10 @@ import requests
 from bs4 import BeautifulSoup
 # global show_url, season_number, season_url
 
-search = "narcos"
-# search = "person of interest"
+# search = "narcos"
+search = "person of interest"
 # search = "rome"
+
 # search on imdb
 url = "http://www.imdb.com/find?q=" + search
 soup = BeautifulSoup(requests.get(url).text, "html.parser")
@@ -83,10 +84,22 @@ for i in sorted(season_number):
             pass
     print("**************************************")
 
-# printing values
+# printing and writing values
+f = open('output.txt', 'w')
 for k in range(1, len(episode_list)):
     for l in range(1, len(episode_list[k])):
         print("Season: " + str(k) + " Episode: " + str(l))
+        f.write("Season: " + str(k) + " Episode: " + str(l))
+        f.write("\n")
         print("Rating : " + str(rating_list[int(k)][int(l)]) + " rated by " + str(raters_list[int(k)][int(l)]) + " users")
+        f.write("Rating : " + str(rating_list[int(k)][int(l)]) + " rated by " + str(raters_list[int(k)][int(l)]) + " users")
+        f.write("\n")
         print("Title : " + str(title_list[int(k)][int(l)]) + " Aired on (" + str(airdate_list[int(k)][int(l)]) + ")")
+        f.write("Title : " + str(title_list[int(k)][int(l)]) + " Aired on (" + str(airdate_list[int(k)][int(l)]) + ")")
+        f.write("\n")
         print("Link : " + str(link_list[int(k)][int(l)]))
+        f.write("Link : " + str(link_list[int(k)][int(l)]))
+        f.write("\n")
+    print()
+    f.write("\n")
+f.close()
