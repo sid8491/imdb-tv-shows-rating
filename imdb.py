@@ -18,7 +18,7 @@ print("IMDB URL : " + show_url)
 
 soup = BeautifulSoup(requests.get(show_url).text, "html.parser")
 print(soup.title)
-seasons = soup.find('div', {"class" : "seasons-and-year-nav"}).contents[7].find_all('a')
+seasons = soup.find('div', {"class": "seasons-and-year-nav"}).contents[7].find_all('a')
 season_number = []
 season_url = []
 episode_list = []
@@ -30,20 +30,33 @@ for season in seasons:
 #     print(i)
 #     print(season_url[-int(i)])
 
+# for loop for looping through all the seasons
 for i in sorted(season_number):
     soup = BeautifulSoup(requests.get(season_url[-int(i)]).text, "html.parser")
     episode_div = soup.find('div', {'class': 'list detail eplist'})
-    abc = 0
-    # for child in episode_div.children:
-    #     abc += 2
-    #     # print(child.find('div', {'class': 'airdate'}))
-    #     print(child)
-    #     if(abc==3):
-    #         break
-    # for ep in episode_div:
-    episode_date = episode_div.find('div', {'class' : 'airdate'})
-    # episode_synopsis = episode_div.find('div', {'class' : 'item_description'})
-    print(episode_date.text.strip())
-    # print(episode_synopsis.text.strip())
+
+    # loop for looping through episodes of given season
+    # ii = 0
+    for child in episode_div.children:
+        # ii += 1
+        # print(child.find('div', {'class': 'airdate'}))
+        if str(child) != "\n":
+            # print(child)
+            # loop for href link and name of all episodes
+            for ep_a in child.find_all('a'):
+                print(ep_a['title'])
+                print("http://imdb.com/" + ep_a['href'])
+                soup = BeautifulSoup(requests.get("http://imdb.com/" + ep_a['href']).text, "html.parser")
+                print(soup.find('div', {'class': 'imdbRating'}).find('span').text.strip())
+                print(soup.find('span', {'class': 'small'}).text.strip())
+                break
+            print(child.find('div', {'class': 'item_description'}).text.strip())
+            print(child.find('div', {'class': 'airdate'}).text.strip())
+            print("---------------------")
+        else:
+            pass
+        # if ii == 2:
+        #     break
+    print("**************************************************************************************************************")
     # break
 
