@@ -2,9 +2,8 @@ __author__ = 'Sid'
 
 import requests
 from bs4 import BeautifulSoup
-# global show_url, season_number, season_url
 
-# search = "narcos"
+# search = "game of thrones"
 search = "person of interest"
 # search = "rome"
 
@@ -19,6 +18,7 @@ show_url = "http://www.imdb.com" + show_url
 
 soup = BeautifulSoup(requests.get(show_url).text, "html.parser")
 print("Title : " + soup.title.text[:-7])
+tv_show_title = soup.title.text[:-7]
 print("IMDB URL : " + show_url)
 seasons = soup.find('div', {"class": "seasons-and-year-nav"}).contents[7].find_all('a')
 season_number = []
@@ -41,16 +41,13 @@ airdate_list = [[] for i in range(len(season_number)+1)]
 for i in sorted(season_number):
     soup = BeautifulSoup(requests.get(season_url[-int(i)]).text, "html.parser")
     episode_div = soup.find('div', {'class': 'list detail eplist'})
-    episode_number = 0
+    episode_number = 1
 
-    # loop for looping through episodes of given season
-    ii = 0
+    # loop through episodes of given season
     for child in episode_div.children:
-        ii += 1
         if str(child) != "\n":
             # loop for href link and name of all episodes
             for ep_a in child.find_all('a'):
-                episode_number += 1
                 try:
                     episode_list[int(i)].append(episode_number)
                 except:
@@ -70,6 +67,7 @@ for i in sorted(season_number):
                 except:
                     raters_list[int(i)].append("NA")
                 break   # to avoid duplicates
+
             try:
                 synopsis_list[int(i)].append(child.find('div', {'class': 'item_description'}).text.strip())
             except:
@@ -80,16 +78,17 @@ for i in sorted(season_number):
                 airdate_list[int(i)].append("NA")
             print("Fetching information of Season " + str(i) + " : Episode " + str(episode_number))
             print("---------------------")
+            episode_number += 1
         else:
             pass
     print("**************************************")
 
 # printing and writing values
-f = open('output.txt', 'w')
+f = open(str(tv_show_title) + '.txt', 'w')
 for k in range(1, len(episode_list)):
-    for l in range(1, len(episode_list[k])):
-        print("Season: " + str(k) + " Episode: " + str(l))
-        f.write("Season: " + str(k) + " Episode: " + str(l))
+    for l in range(0, len(episode_list[k])):
+        print("Season: " + str(k) + " Episode: " + str(l + 1))
+        f.write("Season: " + str(k) + " Episode: " + str(l + 1))
         f.write("\n")
         print("Rating : " + str(rating_list[int(k)][int(l)]) + " rated by " + str(raters_list[int(k)][int(l)]) + " users")
         f.write("Rating : " + str(rating_list[int(k)][int(l)]) + " rated by " + str(raters_list[int(k)][int(l)]) + " users")
