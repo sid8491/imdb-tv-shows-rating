@@ -9,6 +9,6 @@ Currently below details are fetched through code :
 * Link of episode
 * Synopsis
 
-Output is printed to console and written to <name_of_tv_show>.txt file.
+Output is printed to console and written to name_of_tv_show.txt file.
 
 #### Please contribute and make it better.
