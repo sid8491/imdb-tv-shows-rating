@@ -2,6 +2,7 @@ __author__ = 'Sid'
 
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 # search = "game of thrones"
 search = "person of interest"
@@ -45,39 +46,52 @@ for i in sorted(season_number):
 
     # loop through episodes of given season
     for child in episode_div.children:
+        csv_list = []        # for writing in csv file
         if str(child) != "\n":
             # loop for href link and name of all episodes
             for ep_a in child.find_all('a'):
                 try:
                     episode_list[int(i)].append(episode_number)
+                    csv_list.append(episode_number)
                 except:
                     episode_list[int(i)].append("NA")
                 try:
                     title_list[int(i)].append(ep_a['title'])
+                    csv_list.append(ep_a['title'])
                 except:
                     title_list[int(i)].append("NA")
                 link_list[int(i)].append("http://imdb.com/" + ep_a['href'])
                 soup = BeautifulSoup(requests.get("http://imdb.com/" + ep_a['href']).text, "html.parser")
                 try:
                     rating_list[int(i)].append(soup.find('div', {'class': 'imdbRating'}).find('span').text.strip())
+                    csv_list.append(soup.find('div', {'class': 'imdbRating'}).find('span').text.strip())
                 except:
                     rating_list[int(i)].append("NA")
                 try:
                     raters_list[int(i)].append(soup.find('span', {'class': 'small'}).text.strip())
+                    csv_list.append(soup.find('span', {'class': 'small'}).text.strip())
                 except:
                     raters_list[int(i)].append("NA")
-                break   # to avoid duplicates
+                break  # to avoid duplicates
 
             try:
                 synopsis_list[int(i)].append(child.find('div', {'class': 'item_description'}).text.strip())
+                csv_list.append(child.find('div', {'class': 'item_description'}).text.strip())
             except:
                 synopsis_list[int(i)].append("NA")
             try:
                 airdate_list[int(i)].append(child.find('div', {'class': 'airdate'}).text.strip())
+                csv_list.append(child.find('div', {'class': 'airdate'}).text.strip())
             except:
                 airdate_list[int(i)].append("NA")
             print("Fetching information of Season " + str(i) + " : Episode " + str(episode_number))
             print("---------------------")
+
+            # write to csv file
+            with open(str(tv_show_title) + '.csv', 'a') as csvfile:
+                w = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+                w.writerow(csv_list)
+
             episode_number += 1
         else:
             pass
