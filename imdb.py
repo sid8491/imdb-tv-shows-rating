@@ -6,6 +6,7 @@ import csv
 
 # search = "game of thrones"
 search = "person of interest"
+# search = "friends"
 # search = "rome"
 
 # search on imdb
@@ -38,6 +39,13 @@ rating_list = [[] for i in range(len(season_number)+1)]
 raters_list = [[] for i in range(len(season_number)+1)]
 airdate_list = [[] for i in range(len(season_number)+1)]
 
+csv_init = ["S-no", "Season", "Episode", "Name", "Rating", "Raters", "Synopsis", "Air-date"]
+
+# initialize csv file
+with open(str(tv_show_title) + '.csv', 'w') as csvfile:
+                w = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+                w.writerow(csv_init)
+s_no = 1
 # for loop for looping through all the seasons
 for i in sorted(season_number):
     soup = BeautifulSoup(requests.get(season_url[-int(i)]).text, "html.parser")
@@ -52,6 +60,9 @@ for i in sorted(season_number):
             for ep_a in child.find_all('a'):
                 try:
                     episode_list[int(i)].append(episode_number)
+                    csv_list.append(s_no)
+                    s_no += 1
+                    csv_list.append(i)
                     csv_list.append(episode_number)
                 except:
                     episode_list[int(i)].append("NA")
